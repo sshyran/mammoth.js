@@ -452,18 +452,39 @@ test("isUnderline is false if underline element is not present", function() {
     assert.deepEqual(run.isUnderline, false);
 });
 
-test("isUnderline is true if underline element is present", function() {
+test("isUnderline is true if underline element is present without w:val attribute", function() {
     var underlineXml = new XmlElement("w:u");
     var runXml = runWithProperties([underlineXml]);
     var run = readXmlElementValue(runXml);
     assert.equal(run.isUnderline, true);
 });
 
-test("isUnderline is false if underline element is 'none'", function() {
+test("isUnderline is false if underline element is present and w:val is false", function() {
+    var underlineXml = new XmlElement("w:u", {"w:val": "false"});
+    var runXml = runWithProperties([underlineXml]);
+    var run = readXmlElementValue(runXml);
+    assert.equal(run.isUnderline, false);
+});
+
+test("isUnderline is false if underline element is present and w:val is 0", function() {
+    var underlineXml = new XmlElement("w:u", {"w:val": "0"});
+    var runXml = runWithProperties([underlineXml]);
+    var run = readXmlElementValue(runXml);
+    assert.equal(run.isUnderline, false);
+});
+
+test("isUnderline is false if underline element is present and w:val is none", function() {
     var underlineXml = new XmlElement("w:u", {"w:val": "none"});
     var runXml = runWithProperties([underlineXml]);
     var run = readXmlElementValue(runXml);
     assert.equal(run.isUnderline, false);
+});
+
+test("isUnderline is false if underline element is present and w:val is not none or falsy", function() {
+    var underlineXml = new XmlElement("w:u", {"w:val": "single"});
+    var runXml = runWithProperties([underlineXml]);
+    var run = readXmlElementValue(runXml);
+    assert.equal(run.isUnderline, true);
 });
 
 test("isStrikethrough is false if strikethrough element is not present", function() {
