@@ -1,7 +1,7 @@
 # Mammoth .docx to HTML converter
 
 Mammoth is designed to convert .docx documents,
-such as those created by Microsoft Word,
+such as those created by Microsoft Word, Google Docs and LibreOffice,
 and convert them to HTML.
 Mammoth aims to produce simple and clean HTML by using semantic information in the document,
 and ignoring other details.
@@ -725,6 +725,17 @@ strike
 
 Note that this matches text that has had strikethrough explicitly applied to it.
 It will not match any text that is struckthrough because of its paragraph or run style.
+
+#### All caps
+
+Match explicitly all caps text:
+
+```
+all-caps
+```
+
+Note that this matches text that has had all caps explicitly applied to it.
+It will not match any text that is all caps because of its paragraph or run style.
 
 #### Small caps
 

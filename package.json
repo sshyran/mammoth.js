@@ -1,6 +1,6 @@
 {
   "name": "@adobe/mammoth",
-  "version": "1.4.13-bleeding.0",
+  "version": "1.4.15-bleeding.0",
   "author": "Michael Williamson <mike@zwobble.org>",
   "description": "Convert Word documents from docx to simple HTML and Markdown",
   "keywords": [
