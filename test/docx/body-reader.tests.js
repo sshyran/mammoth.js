@@ -246,7 +246,7 @@ test("complex fields", (function() {
     function isHyperlinkedRun(hyperlinkProperties) {
         return isRun({
             children: contains(
-                isHyperlink(_.extend({href: uri}, hyperlinkProperties))
+                isHyperlink(hyperlinkProperties)
             )
         });
     }
@@ -257,7 +257,7 @@ test("complex fields", (function() {
             assert.deepEqual(instrText, []);
         },
 
-        "runs in a complex field for hyperlinks are read as hyperlinks": function() {
+        "runs in a complex field for hyperlink without switch are read as external hyperlinks": function() {
             var hyperlinkRunXml = runOfText("this is a hyperlink");
             var paragraphXml = new XmlElement("w:p", {}, [
                 beginXml,
@@ -272,6 +272,33 @@ test("complex fields", (function() {
                 isEmptyRun,
                 isEmptyHyperlinkedRun,
                 isHyperlinkedRun({
+                    href: uri,
+                    children: contains(
+                        isText("this is a hyperlink")
+                    )
+                }),
+                isEmptyRun
+            ));
+        },
+
+        "runs in a complex field for hyperlink with l switch are read as internal hyperlinks": function() {
+            var hyperlinkRunXml = runOfText("this is a hyperlink");
+            var paragraphXml = new XmlElement("w:p", {}, [
+                beginXml,
+                new XmlElement("w:instrText", {}, [
+                    xml.text(' HYPERLINK \\l "InternalLink"')
+                ]),
+                separateXml,
+                hyperlinkRunXml,
+                endXml
+            ]);
+            var paragraph = readXmlElementValue(paragraphXml);
+
+            assertThat(paragraph.children, contains(
+                isEmptyRun,
+                isEmptyHyperlinkedRun,
+                isHyperlinkedRun({
+                    anchor: "InternalLink",
                     children: contains(
                         isText("this is a hyperlink")
                     )
@@ -324,6 +351,7 @@ test("complex fields", (function() {
                 isEmptyRun,
                 isEmptyHyperlinkedRun,
                 isHyperlinkedRun({
+                    href: uri,
                     children: contains(
                         isText("this is a hyperlink")
                     )
@@ -356,6 +384,7 @@ test("complex fields", (function() {
                 isEmptyHyperlinkedRun,
                 isEmptyHyperlinkedRun,
                 isHyperlinkedRun({
+                    href: uri,
                     children: contains(
                         isText("this is a hyperlink")
                     )
@@ -387,6 +416,7 @@ test("complex fields", (function() {
                 isEmptyHyperlinkedRun,
                 isEmptyHyperlinkedRun,
                 isHyperlinkedRun({
+                    href: uri,
                     children: contains(
                         isText("John Doe")
                     )
@@ -415,6 +445,7 @@ test("complex fields", (function() {
                 isEmptyHyperlinkedRun,
                 isEmptyHyperlinkedRun,
                 isHyperlinkedRun({
+                    href: uri,
                     children: contains(
                         isText("this is a hyperlink")
                     )
@@ -670,6 +701,27 @@ test("soft hyphens are read as text", function() {
     var element = new XmlElement("w:softHyphen", {}, []);
     var text = readXmlElementValue(element);
     assert.deepEqual(text, new documents.Text("\u00AD"));
+});
+
+test("w:sym with supported font and supported code point in ASCII range is converted to text", function() {
+    var element = new XmlElement("w:sym", {"w:font": "Wingdings", "w:char": "28"}, []);
+    var text = readXmlElementValue(element);
+    assert.deepEqual(text, new documents.Text("🕿"));
+});
+
+test("w:sym with supported font and supported code point in private use area is converted to text", function() {
+    var element = new XmlElement("w:sym", {"w:font": "Wingdings", "w:char": "F028"}, []);
+    var text = readXmlElementValue(element);
+    assert.deepEqual(text, new documents.Text("🕿"));
+});
+
+test("w:sym with unsupported font and code point produces empty result with warning", function() {
+    var element = new XmlElement("w:sym", {"w:font": "Dingwings", "w:char": "28"}, []);
+
+    var result = readXmlElement(element);
+
+    assert.deepEqual(result.value, []);
+    assert.deepEqual(result.messages, [warning("A w:sym element with an unsupported character was ignored: char 28 in font Dingwings")]);
 });
 
 test("w:tbl is read as document table element", function() {
@@ -1038,6 +1090,18 @@ test("can read linked pictures", function() {
         contentType: "image/png",
         buffer: IMAGE_BUFFER
     }));
+});
+
+test("warning if blip has no image file", function() {
+    var drawing = createInlineImage({
+        blip: new XmlElement("a:blip"),
+        description: "It's a hat"
+    });
+
+    var result = readXmlElement(drawing);
+
+    assert.deepEqual(result.messages, [warning("Could not find image file for a:blip element")]);
+    assert.deepEqual(result.value, []);
 });
 
 test("warning if unsupported image type", function() {

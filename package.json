@@ -1,6 +1,6 @@
 {
   "name": "@adobe/mammoth",
-  "version": "1.4.15-bleeding.1",
+  "version": "1.4.20-bleeding.1",
   "author": "Michael Williamson <mike@zwobble.org>",
   "description": "Convert Word documents from docx to simple HTML and Markdown",
   "keywords": [
@@ -19,17 +19,18 @@
   "dependencies": {
     "argparse": "~1.0.3",
     "bluebird": "~3.4.0",
-    "jszip": "~2.5.0",
-    "lop": "~0.4.0",
+    "dingbat-to-unicode": "^1.0.1",
+    "jszip": "^3.7.1",
+    "lop": "^0.4.1",
     "path-is-absolute": "^1.0.0",
     "sax": "~1.1.1",
-    "underscore": "~1.8.3",
+    "underscore": "^1.13.1",
     "xmlbuilder": "^10.0.0"
   },
   "devDependencies": {
     "browserify": "~13.0.1",
     "browserify-prepend-licenses": "~1.0.0",
-    "duck": "~0.1.11",
+    "duck": "^0.1.12",
     "eslint": "2.13.1",
     "hamjest": "2.13.0",
     "mocha": "~2.2.5",
