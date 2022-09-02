@@ -1,6 +1,6 @@
 {
-  "name": "@adobe/mammoth",
-  "version": "1.4.20-bleeding.1",
+  "name": "mammoth",
+  "version": "1.5.1-bleeding.1",
   "author": "Michael Williamson <mike@zwobble.org>",
   "description": "Convert Word documents from docx to simple HTML and Markdown",
   "keywords": [
@@ -34,7 +34,7 @@
     "eslint": "2.13.1",
     "hamjest": "2.13.0",
     "mocha": "~2.2.5",
-    "temp": "~0.7.0",
+    "temp": "^0.9.4",
     "uglify-js": "~2.4.8"
   },
   "browser": {
@@ -47,7 +47,7 @@
   "scripts": {
     "pretest": "eslint lib test",
     "test": "mocha 'test/**/*.tests.js'",
-    "prepublish": "make mammoth.browser.min.js"
+    "prepare": "make mammoth.browser.min.js"
   },
   "license": "BSD-2-Clause"
 }
